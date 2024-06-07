@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.filter.UserFilter;
+import org.example.filter.Filter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ public class UserService {
         return this.users;
     }
 
-    public List<User> findUsers(UserFilter filter) {
+    public List<User> findUsers(Filter<User> filter) {
         return this.getAllUsers().stream()
                 .filter(filter::accept)
                 .collect(Collectors.toList());

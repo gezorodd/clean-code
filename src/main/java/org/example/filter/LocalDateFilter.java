@@ -2,7 +2,7 @@ package org.example.filter;
 
 import java.time.LocalDate;
 
-public class LocalDateFilter {
+public class LocalDateFilter implements Filter<LocalDate> {
     private final LocalDate min;
     private final LocalDate max;
 
@@ -23,6 +23,7 @@ public class LocalDateFilter {
         return new LocalDateFilter(value1, value2);
     }
 
+    @Override
     public boolean accept(LocalDate value) {
         boolean checkMin = this.min == null || value.isAfter(this.min);
         boolean checkMax = this.max == null || value.isBefore(this.max);

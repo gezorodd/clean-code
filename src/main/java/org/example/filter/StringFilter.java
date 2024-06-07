@@ -1,6 +1,6 @@
 package org.example.filter;
 
-public class StringFilter {
+public class StringFilter implements Filter<String> {
     private final StringMatchMode matchMode;
     private final String fragment;
     private final boolean ignoreCase;
@@ -11,11 +11,11 @@ public class StringFilter {
         this.ignoreCase = ignoreCase;
     }
 
-    public static StringFilter equals(String value) {
+    public static StringFilter isEqual(String value) {
         return new StringFilter(StringMatchMode.EQUALS, value, false);
     }
 
-    public static StringFilter equalsIgnoreCase(String value) {
+    public static StringFilter isEqualIgnoreCase(String value) {
         return new StringFilter(StringMatchMode.EQUALS, value, true);
     }
 
@@ -23,10 +23,12 @@ public class StringFilter {
         return new StringFilter(StringMatchMode.CONTAINS, value, false);
     }
 
+    @SuppressWarnings("unused")
     public static StringFilter containsIgnoreCase(String value) {
         return new StringFilter(StringMatchMode.CONTAINS, value, true);
     }
 
+    @SuppressWarnings("unused")
     public static StringFilter startsWith(String value) {
         return new StringFilter(StringMatchMode.STARTS_WITH, value, false);
     }
@@ -35,6 +37,7 @@ public class StringFilter {
         return new StringFilter(StringMatchMode.STARTS_WITH, value, true);
     }
 
+    @Override
     public boolean accept(String value) {
         String valueOperand = this.ignoreCase ? value.toUpperCase() : value;
         String fragmentOperand = this.ignoreCase ? this.fragment.toUpperCase() : this.fragment;
