@@ -1,21 +1,15 @@
 package org.example;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class UserService {
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static UserService instance;
 
     private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -33,52 +27,30 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        if (this.users == null) {
-            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            InputStream is = classloader.getResourceAsStream("users.csv");
-            InputStreamReader streamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
-            BufferedReader reader = new BufferedReader(streamReader);
-            try {
-                this.users = new ArrayList<>();
-                for (String line; (line = reader.readLine()) != null; ) {
-                    String[] fields = line.split(",");
-                    try {
-                        User user = new User();
-                        user.setId(Long.parseLong(fields[0]));
-                        user.setLogin(fields[1]);
-                        user.setFirstName(fields[2]);
-                        user.setLastName(fields[3]);
-                        LocalDate birthDate = DATE_FORMAT.parse(fields[4]).toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate();
-                        user.setBirthDate(birthDate);
-                        user.setGender(fields[5]);
-                        this.users.add(user);
-                    } catch (ParseException e) {
-                        throw new RuntimeException("Problem with birthdate");
-                    }
-                }
-            } catch (IOException e) {
-                this.logger.severe("Could not load users");
-                return null;
-            }
+        if (this.users != null) {
+            return this.users;
         }
-        return this.users;
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream("users.csv");
+        InputStreamReader streamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(streamReader);
+
+        UserMapper userMapper = new UserMapper();
+        return this.users = reader.lines()
+            .map(userMapper::mapUser)
+            .collect(Collectors.toList());
     }
 
     public List<User> findUsers(UserSearchFilter filter, UserSearchType searchType) {
-        List<User> users = new ArrayList<>();
         List<User> allUsers = this.getAllUsers();
         if (allUsers == null) {
             return null;
         }
+        List<User> users = new ArrayList<>();
         for (User user : allUsers) {
-            boolean checkLogin = checkUserInfo(user.getLogin(), filter.getLoginFragment(),
-                    filter.getLoginMode(), filter.isLoginIgnoreCase());
-            boolean checkFirstName = checkUserInfo(user.getFirstName(), filter.getFirstNameFragment(),
-                    filter.getFirstNameMode(), filter.isFirstNameIgnoreCase());
-            boolean checkLastName = checkUserInfo(user.getLastName(), filter.getLastNameFragment(),
-                    filter.getLastNameMode(), filter.isLastNameIgnoreCase());
+            boolean checkLogin = checkUserInfo(user.getLogin(), filter.getLoginFilter());
+            boolean checkFirstName = checkUserInfo(user.getFirstName(), filter.getFirstNameFilter());
+            boolean checkLastName = checkUserInfo(user.getLastName(), filter.getLastNameFilter());
 
             boolean checkBirthDate = this.checkBirthDate(filter, user);
 
@@ -103,10 +75,18 @@ public class UserService {
         return users;
     }
 
-    private boolean checkUserInfo(String actualValue, String fragment, UserSearchMode mode, boolean ignoreCase) {
+    private boolean checkUserInfo(String actualValue, StringFilter stringFilter) {
+        if (stringFilter == null) {
+            return true;
+        }
+        String fragment = stringFilter.getFragment();
+        UserSearchMode mode = stringFilter.getMode();
+
         if (fragment == null || mode == null) {
             return true;
         }
+
+        boolean ignoreCase = stringFilter.isIgnoreCase();
         switch (mode) {
             case EQUALS:
                 if (ignoreCase) {
@@ -136,7 +116,7 @@ public class UserService {
         if (filter.getMinBirthDate() != null) {
             if (filter.getMaxBirthDate() != null) {
                 checkBirthDate = user.getBirthDate().isAfter(filter.getMinBirthDate()) &&
-                        user.getBirthDate().isBefore(filter.getMaxBirthDate());
+                    user.getBirthDate().isBefore(filter.getMaxBirthDate());
             } else {
                 checkBirthDate = user.getBirthDate().isAfter(filter.getMinBirthDate());
             }

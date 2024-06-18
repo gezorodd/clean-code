@@ -4,89 +4,35 @@ import java.time.LocalDate;
 
 public class UserSearchFilter {
     
-    private String loginFragment;
-    private UserSearchMode loginMode;
-    private boolean loginIgnoreCase;
-    private String firstNameFragment;
-    private UserSearchMode firstNameMode;
-    private boolean firstNameIgnoreCase;
-    private String lastNameFragment;
-    private UserSearchMode lastNameMode;
-    private boolean lastNameIgnoreCase;
+    private StringFilter loginFilter;
+    private StringFilter firstNameFilter;
+    private StringFilter lastNameFilter;
     private LocalDate minBirthDate;
     private LocalDate maxBirthDate;
     private String genderFilter;
 
-    public String getLoginFragment() {
-        return loginFragment;
+    public StringFilter getLoginFilter() {
+        return loginFilter;
     }
 
-    public void setLoginFragment(String loginFragment) {
-        this.loginFragment = loginFragment;
+    public void setLoginFilter(StringFilter loginFilter) {
+        this.loginFilter = loginFilter;
     }
 
-    public UserSearchMode getLoginMode() {
-        return loginMode;
+    public StringFilter getFirstNameFilter() {
+        return firstNameFilter;
     }
 
-    public void setLoginMode(UserSearchMode loginMode) {
-        this.loginMode = loginMode;
+    public void setFirstNameFilter(StringFilter firstNameFilter) {
+        this.firstNameFilter = firstNameFilter;
     }
 
-    public boolean isLoginIgnoreCase() {
-        return loginIgnoreCase;
+    public StringFilter getLastNameFilter() {
+        return lastNameFilter;
     }
 
-    public void setLoginIgnoreCase(boolean loginIgnoreCase) {
-        this.loginIgnoreCase = loginIgnoreCase;
-    }
-
-    public String getFirstNameFragment() {
-        return firstNameFragment;
-    }
-
-    public void setFirstNameFragment(String firstNameFragment) {
-        this.firstNameFragment = firstNameFragment;
-    }
-
-    public UserSearchMode getFirstNameMode() {
-        return firstNameMode;
-    }
-
-    public void setFirstNameMode(UserSearchMode firstNameMode) {
-        this.firstNameMode = firstNameMode;
-    }
-
-    public boolean isFirstNameIgnoreCase() {
-        return firstNameIgnoreCase;
-    }
-
-    public void setFirstNameIgnoreCase(boolean firstNameIgnoreCase) {
-        this.firstNameIgnoreCase = firstNameIgnoreCase;
-    }
-
-    public String getLastNameFragment() {
-        return lastNameFragment;
-    }
-
-    public void setLastNameFragment(String lastNameFragment) {
-        this.lastNameFragment = lastNameFragment;
-    }
-
-    public UserSearchMode getLastNameMode() {
-        return lastNameMode;
-    }
-
-    public void setLastNameMode(UserSearchMode lastNameMode) {
-        this.lastNameMode = lastNameMode;
-    }
-
-    public boolean isLastNameIgnoreCase() {
-        return lastNameIgnoreCase;
-    }
-
-    public void setLastNameIgnoreCase(boolean lastNameIgnoreCase) {
-        this.lastNameIgnoreCase = lastNameIgnoreCase;
+    public void setLastNameFilter(StringFilter lastNameFilter) {
+        this.lastNameFilter = lastNameFilter;
     }
 
     public LocalDate getMinBirthDate() {

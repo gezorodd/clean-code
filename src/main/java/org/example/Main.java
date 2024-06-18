@@ -13,22 +13,31 @@ public class Main {
         userSearchFilter.setMinBirthDate(LocalDate.of(2000, 1, 1));
         userSearchFilter.setMaxBirthDate(LocalDate.of(2010, 1, 1));
         userSearchFilter.setGenderFilter("M");
-        userSearchFilter.setLoginFragment("3");
-        userSearchFilter.setLoginMode(UserSearchMode.CONTAINS);
 
-        userSearchFilter.setFirstNameFragment("Malvin");
-        userSearchFilter.setFirstNameMode(UserSearchMode.EQUALS);
-        userSearchFilter.setFirstNameIgnoreCase(true);
 
-        userSearchFilter.setLastNameFragment("Cira");
-        userSearchFilter.setLastNameMode(UserSearchMode.STARTS_WITH);
-        userSearchFilter.setLastNameIgnoreCase(true);
+        userSearchFilter.setLoginFilter(
+            new StringFilter()
+                .fragment("3")
+                .mode(UserSearchMode.CONTAINS)
+        );
+        userSearchFilter.setFirstNameFilter(
+            new StringFilter()
+                .fragment("Malvin")
+                .mode(UserSearchMode.EQUALS)
+                .ignoreCase(true)
+        );
+        userSearchFilter.setLastNameFilter(
+            new StringFilter()
+                .fragment("Cira")
+                .mode(UserSearchMode.STARTS_WITH)
+                .ignoreCase(true)
+        );
 
         List<User> users = userService.findUsers(userSearchFilter, UserSearchType.ALL_MATCH);
         System.out.println(
-                users.stream()
-                        .map(User::toString)
-                        .collect(Collectors.joining("\n"))
+            users.stream()
+                .map(User::toString)
+                .collect(Collectors.joining("\n"))
         );
     }
 }
