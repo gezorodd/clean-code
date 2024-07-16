@@ -1,6 +1,6 @@
 package org.example;
 
-public enum UserSearchType {
+public enum UserMatchMode {
     ALL_MATCH,
     ANY_MATCH
 }

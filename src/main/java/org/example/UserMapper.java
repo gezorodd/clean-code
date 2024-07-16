@@ -21,10 +21,18 @@ public class UserMapper {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
             user.setBirthDate(birthDate);
-            user.setGender(fields[5]);
+            user.setGender(mapGender(fields[5]));
             return user;
         } catch (ParseException e) {
             throw new RuntimeException("Problem with birthdate");
         }
+    }
+
+    private Gender mapGender(String gender) {
+        return switch (gender.trim().toUpperCase()) {
+            case "M" -> Gender.MALE;
+            case "F" -> Gender.FEMALE;
+            default -> Gender.OTHER;
+        };
     }
 }

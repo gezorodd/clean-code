@@ -8,7 +8,7 @@ public class User {
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-    private String gender;
+    private Gender gender;
 
     public long getId() {
         return id;
@@ -50,11 +50,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 

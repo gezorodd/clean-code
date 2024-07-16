@@ -9,11 +9,14 @@ public class Main {
     public static void main(String[] args) {
         UserService userService = UserService.getInstance();
 
-        UserSearchFilter userSearchFilter = new UserSearchFilter();
-        userSearchFilter.setMinBirthDate(LocalDate.of(2000, 1, 1));
-        userSearchFilter.setMaxBirthDate(LocalDate.of(2010, 1, 1));
-        userSearchFilter.setGenderFilter("M");
-
+        UserSearchFilter userSearchFilter = new UserSearchFilter(UserMatchMode.ALL_MATCH);
+        userSearchFilter.setBirthDateFilter(
+            new LocalDateFilter(
+                LocalDate.of(2000, 1, 1),
+                LocalDate.of(2010, 1, 1)
+            )
+        );
+        userSearchFilter.setGenderFilter(new GenderFilter(Gender.MALE));
 
         userSearchFilter.setLoginFilter(
             new StringFilter()
@@ -33,7 +36,7 @@ public class Main {
                 .ignoreCase(true)
         );
 
-        List<User> users = userService.findUsers(userSearchFilter, UserSearchType.ALL_MATCH);
+        List<User> users = userService.findUsers(userSearchFilter);
         System.out.println(
             users.stream()
                 .map(User::toString)
